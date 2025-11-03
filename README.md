@@ -13,3 +13,7 @@
 5. Nginx làm web-server 
 -------------------------------------------------------
 # Bài làm: 
+## 1. Cài đặt môi trường Linux: Enable wsl: Cài đặt docker desktop
+1. Mở PowerShell với quyền Administrator. Chạy lần lượt 2 lệnh sau:
+- `dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart`
+- `dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart`
