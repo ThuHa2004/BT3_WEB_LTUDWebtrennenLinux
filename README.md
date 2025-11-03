@@ -17,3 +17,8 @@
 1. Mở PowerShell với quyền Administrator. Chạy lần lượt 2 lệnh sau:
 - `dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart`
 - `dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart`
+
+  <img width="1360" height="562" alt="image" src="https://github.com/user-attachments/assets/f3744c92-0f51-48be-88f3-fd3ba08a6fb3" />
+
+  
+
