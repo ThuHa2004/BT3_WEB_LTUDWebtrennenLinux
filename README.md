@@ -28,9 +28,12 @@
   <img width="870" height="288" alt="image" src="https://github.com/user-attachments/assets/eb8a1568-fa53-42e1-9ed3-370c38c15277" />
 
 #### Bước 2: Cài Ubuntu bằng PowerShell (hoặc tải từ Microsoft Store)
-**Mở PowerShell và chạy lệnh `wsl --install -d Ubuntu-22.04` để cài ubuntu**
+**Truy cập và link sau `Ubuntu 22.04.5 LTS – Microsoft Store` để download ubuntu**
+- Sau khi download ubuntu về máy, tiến hành cài đặt ubuntu, sẽ hiển thị ra của sổ yêu cầu người dùng đặt username và password cho ubuntu để cho các lần sau đăng nhập vào. Như vậy là đã cài đặt thành công ubuntu.
+  
+  <img width="1471" height="753" alt="Screenshot 2025-11-04 001326" src="https://github.com/user-attachments/assets/a8fc76ec-ca7e-4134-9e11-972a6532547b" />
 
-- 
+  <img width="947" height="285" alt="image" src="https://github.com/user-attachments/assets/a6e11458-01aa-4fa6-904d-2aa44b0f9291" />
 
-
+#### Bước 3: Cài đặt Docker
 
