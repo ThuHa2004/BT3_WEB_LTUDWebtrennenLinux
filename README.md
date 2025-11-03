@@ -13,12 +13,24 @@
 5. Nginx làm web-server 
 -------------------------------------------------------
 # Bài làm: 
-## 1. Cài đặt môi trường Linux: Enable wsl: Cài đặt docker desktop
-1. Mở PowerShell với quyền Administrator. Chạy lần lượt 2 lệnh sau:
+## 1. Cài đặt môi trường Linux
+### Enable wsl: Cài đặt docker desktop
+#### Bước 1: Bật WSl và Virtual Machine Platform
+**Mở PowerShell với quyền Administrator. Chạy lần lượt 2 lệnh sau:**
 - `dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart`
 - `dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart`
 
   <img width="1360" height="562" alt="image" src="https://github.com/user-attachments/assets/f3744c92-0f51-48be-88f3-fd3ba08a6fb3" />
 
-  
+**Đặt WSL default verersion = 2**
+- Chạy lệnh này trong PowerShell Administrator: `wsl --set-default-version 2`
+
+  <img width="870" height="288" alt="image" src="https://github.com/user-attachments/assets/eb8a1568-fa53-42e1-9ed3-370c38c15277" />
+
+#### Bước 2: Cài Ubuntu bằng PowerShell (hoặc tải từ Microsoft Store)
+**Mở PowerShell và chạy lệnh `wsl --install -d Ubuntu-22.04` để cài ubuntu**
+
+- 
+
+
 
