@@ -186,3 +186,7 @@ server {
     }
 }
 ```
+- `172.23.98.16:8086` influxDB:
+
+  <img width="1914" height="979" alt="image" src="https://github.com/user-attachments/assets/238b8065-f8b2-4f3c-973f-f1439db64a96" />
+
