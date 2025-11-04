@@ -13,6 +13,26 @@
 5. Nginx làm web-server 
 -------------------------------------------------------
 # Bài làm: 
+- Cấu trúc thư mục:
+```
+BT3_LTUDWEB_TrenNenLinux/
+├── docker-compose.yml
+├── nginx/
+│   └── default.conf
+├── frontend/
+│   ├── index.html
+│   ├── app.js
+│   └── style.css
+├── node-red/
+│   └── data/       # Node-RED flows, settings.js sẽ tự sinh
+├── mariadb/
+│   └── data/       # Database volume
+├── grafana/
+│   └── data/
+├── influxdb/
+│   └── data/
+```
+
 ## 1. Cài đặt môi trường Linux
 ### Enable wsl: Cài đặt docker desktop
 #### Bước 1: Bật WSl và Virtual Machine Platform
@@ -63,83 +83,121 @@
 
 #### Tạo file `docker-compose.yml` để cài đặt các docker container trên:
 ```
-version: "3.8"
+version: '3.8'
 
 services:
   mariadb:
-    image: mariadb:latest
+    image: mariadb:10.11
     container_name: mariadb
-    restart: unless-stopped
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root123
-      MYSQL_DATABASE: TMDT 
-      MYSQL_USER: thuha 
-      MYSQL_PASSWORD: 123123
+      MYSQL_DATABASE: ShopQA
+      MYSQL_USER: thuha
+      MYSQL_PASSWORD: thuha123
     ports:
       - "3306:3306"
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - ./mariadb/data:/var/lib/mysql
+    networks:
+      - banhang-network
 
   phpmyadmin:
     image: phpmyadmin:latest
     container_name: phpmyadmin
-    restart: unless-stopped
+    restart: always
     environment:
       PMA_HOST: mariadb
       PMA_PORT: 3306
-      PMA_USER: thuha
-      PMA_PASSWORD: 123123
+      MYSQL_ROOT_PASSWORD: root123
     ports:
       - "8080:80"
     depends_on:
       - mariadb
+    networks:
+      - banhang-network
+
+  influxdb:
+    image: influxdb:2.7
+    container_name: influxdb
+    restart: always
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=admin123
+      - DOCKER_INFLUXDB_INIT_ORG=banhang
+      - DOCKER_INFLUXDB_INIT_BUCKET=statistics
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-auth-token
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./influxdb/data:/var/lib/influxdb2
+    networks:
+      - banhang-network
 
   nodered:
     image: nodered/node-red:latest
     container_name: nodered
-    restart: unless-stopped
+    restart: always
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
     ports:
       - "1880:1880"
+    user: "1000:1000"
     volumes:
-      - nodered_data:/data
-
-  influxdb:
-    image: influxdb:latest
-    container_name: influxdb
-    restart: unless-stopped
-    ports:
-      - "8086:8086"
-    volumes:
-      - influxdb_data:/var/lib/influxdb
+      - ./node-red/data:/data
+    depends_on:
+      - mariadb
+      - influxdb
+    networks:
+      - banhang-network
+    command: >
+      sh -c "npm install -g node-red-node-mysql &&
+      node-red --httpNodeRoot=/api --httpAdminRoot=/nodered
+      --functionGlobalContext='{\"mysql\":require(\"mysql\").createPool({host:\"mariadb\",user:\"thuha\",password:\"thuha123\",database:\"ShopQA\",port:3306,charset:\"utf8mb4\",connectionLimit:10}),\"crypto\":require(\"crypto\")}'"
 
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
-    restart: unless-stopped
+    restart: always
+    environment:
+      - GF_SERVER_HTTP_PORT=3000
+      - GF_SERVER_ROOT_URL=%(protocol)s://tranthithuha.com/grafana/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
     ports:
       - "3000:3000"
     volumes:
-      - grafana_data:/var/lib/grafana
+      - ./grafana/data:/var/lib/grafana
     depends_on:
       - influxdb
+    networks:
+      - banhang-network
 
   nginx:
     image: nginx:latest
     container_name: nginx
-    restart: unless-stopped
+    restart: always
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./frontend:/usr/share/nginx/html
-      - ./nginx/conf:/etc/nginx/conf.d
+      # File cấu hình nginx reverse proxy cho Node-RED và Grafana
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      # Thư mục chứa chứng chỉ SSL (nếu bạn dùng https)
+      - ./nginx/certs:/etc/nginx/certs:ro
+      # Thư mục web frontend SPA (index.html, js, css,…)
+      - ./frontend:/usr/share/nginx/html:ro
+    depends_on:
+      - nodered
+      - grafana
+    networks:
+      - banhang-network
 
-volumes:
-  mariadb_data:
-  nodered_data:
-  influxdb_data:
-  grafana_data:
-
+networks:
+  banhang-network:
+    driver: bridge
 ```
 - Sau khi tạo file `docker-compose.yml`, khởi động lại tất cả container bằng cách chạy lệnh `docker compose up -d` trong thư mục chứa file `docker-compose.yml`.
 
@@ -154,39 +212,94 @@ volumes:
 ```
 server {
     listen 80;
-    server_name tranthithuha.com;
+    server_name tranthithuha.com www.tranthithuha.com;
 
-    # 1️⃣ Website tĩnh
-    root /usr/share/nginx/html;
-    index index.html;
+    # === Gốc: SPA Frontend ===
+    location / {
+        root /usr/share/nginx/html;
+        index index.html;
+        try_files $uri $uri/ /index.html;
 
-    # 2️⃣ Reverse proxy cho Node-RED
+        # Cache static assets
+        location ~* \.(js|css|png|jpg|jpeg|gif|svg|ico|woff2?|ttf|eot)$ {
+            expires 1y;
+            add_header Cache-Control "public, immutable";
+        }
+    }
+
+    # === API Backend (Node-RED) ===
+    location /api/ {
+        proxy_pass http://nodered:1880/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+ 
+    # === Node-RED UI ===
     location /nodered/ {
+        # Loại bỏ prefix /nodered/ khi chuyển tiếp đến Node-RED
+        rewrite ^/nodered/(.*)$ /$1 break;
         proxy_pass http://nodered:1880/;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
         proxy_set_header Host $host;
-        rewrite ^/nodered/(.*) /$1 break;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 
-    # 3️⃣ Reverse proxy cho Grafana
+    # === Grafana ===
     location /grafana/ {
         proxy_pass http://grafana:3000/;
         proxy_http_version 1.1;
+        
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
-        proxy_set_header Host $host;
-        rewrite ^/grafana/(.*) /$1 break;
+
+        # Fix redirect khi dùng subpath /grafana
+        proxy_redirect http://grafana:3000/ /grafana/;
+        proxy_redirect / /grafana/;
     }
 
-    # Mặc định
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
+    # === Bảo mật Header ===
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+  #  add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    # === 404 Fallback cho SPA ===
+    error_page 404 /index.html;
 }
+
 ```
-- `172.23.98.16:8086` influxDB:
+##### `172.23.98.16:8086` influxDB:
 
   <img width="1914" height="979" alt="image" src="https://github.com/user-attachments/assets/238b8065-f8b2-4f3c-973f-f1439db64a96" />
+
+##### `172.23.98.16:8080` phpAdmin:
+
+  <img width="1919" height="817" alt="image" src="https://github.com/user-attachments/assets/506ca4e1-5fdc-4e93-b820-698d97892c12" />
+
+  <img width="1906" height="976" alt="image" src="https://github.com/user-attachments/assets/15d0b9e0-d775-494f-a01d-399933f1fe8a" />
+
+- **Website chính:** `http://tranthithuha.com`
+- **Granfana:** `http://tranthithuha.com/grafana`
+- **Node-red:** `http://tranthithuha.com/nodered`
+
+### 5. Lập trình web frontend+backend (Web thương mại điện tử)
+- Cấu trúc thư mục:
+```
+   frontend/
+   ├── index.html
+   ├── app.js
+   └── style.css
+```
+
 
