@@ -1,0 +1,116 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: ShopQA
+      MYSQL_USER: thuha
+      MYSQL_PASSWORD: thuha123
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mariadb/data:/var/lib/mysql
+    networks:
+      - banhang-network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root123
+    ports:
+      - "8080:80"
+    depends_on:
+      - mariadb
+    networks:
+      - banhang-network
+
+  influxdb:
+    image: influxdb:2.7
+    container_name: influxdb
+    restart: always
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=admin123
+      - DOCKER_INFLUXDB_INIT_ORG=banhang
+      - DOCKER_INFLUXDB_INIT_BUCKET=statistics
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-auth-token
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./influxdb/data:/var/lib/influxdb2
+    networks:
+      - banhang-network
+
+  nodered:
+    image: nodered/node-red:latest
+    container_name: nodered
+    restart: always
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+    ports:
+      - "1880:1880"
+    user: "1000:1000"
+    volumes:
+      - ./node-red/data:/data
+    depends_on:
+      - mariadb
+      - influxdb
+    networks:
+      - banhang-network
+    command: >
+      sh -c "npm install -g node-red-node-mysql &&
+      node-red --httpNodeRoot=/api --httpAdminRoot=/nodered
+      --functionGlobalContext='{\"mysql\":require(\"mysql\").createPool({host:\"mariadb\",user:\"thuha\",password:\"thuha123\",database:\"ShopQA\",port:3306,charset:\"utf8mb4\",connectionLimit:10}),\"crypto\":require(\"crypto\")}'"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: always
+    environment:
+      - GF_SERVER_HTTP_PORT=3000
+      - GF_SERVER_ROOT_URL=%(protocol)s://tranthithuha.com/grafana/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/data:/var/lib/grafana
+      - ./grafana/config/grafana.ini:/etc/grafana/grafana.ini
+    depends_on:
+      - influxdb
+    networks:
+      - banhang-network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # File cấu hình nginx reverse proxy cho Node-RED và Grafana
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      # Thư mục chứa chứng chỉ SSL (nếu bạn dùng https)
+      - ./nginx/certs:/etc/nginx/certs:ro
+      # Thư mục web frontend SPA (index.html, js, css,…)
+      - ./frontend:/usr/share/nginx/html:ro
+    depends_on:
+      - nodered
+      - grafana
+    networks:
+      - banhang-network
+
+networks:
+  banhang-network:
+    driver: bridge
