@@ -293,7 +293,12 @@ server {
 - **Granfana:** `http://tranthithuha.com/grafana`
 - **Node-red:** `http://tranthithuha.com/nodered`
 
+  <img width="1908" height="1031" alt="image" src="https://github.com/user-attachments/assets/f7379c47-dabe-490e-bd72-c2e5d85f87f6" />
+
+
 ### 5. Lập trình web frontend+backend (Web thương mại điện tử)
+
+
 - Cấu trúc thư mục:
 ```
    frontend/
