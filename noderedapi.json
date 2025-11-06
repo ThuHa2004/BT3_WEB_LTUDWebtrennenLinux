@@ -1,0 +1,1011 @@
+[
+    {
+        "id": "805b42cfaa2f1cbb",
+        "type": "group",
+        "z": "e2aeb44609382978",
+        "name": "API Tìm Kiếm",
+        "style": {
+            "label": true,
+            "stroke": "#000000",
+            "color": "#000000"
+        },
+        "nodes": [
+            "f416a273ab261221",
+            "495e13dc1548d418",
+            "d555704baa2534bf",
+            "bc5d878ed7272832"
+        ],
+        "x": 294,
+        "y": 799,
+        "w": 832,
+        "h": 82
+    },
+    {
+        "id": "f416a273ab261221",
+        "type": "http in",
+        "z": "e2aeb44609382978",
+        "g": "805b42cfaa2f1cbb",
+        "name": "GET /tim-kiem",
+        "url": "/tim-kiem",
+        "method": "get",
+        "x": 390,
+        "y": 840,
+        "wires": [
+            [
+                "495e13dc1548d418"
+            ]
+        ]
+    },
+    {
+        "id": "495e13dc1548d418",
+        "type": "function",
+        "z": "e2aeb44609382978",
+        "g": "805b42cfaa2f1cbb",
+        "name": "Parse keyword",
+        "func": "const keyword = msg.req.query.q;\nif (!keyword) {\n    msg.payload = [];\n    return msg;\n}\nconst searchPattern = `%${keyword}%`;\nmsg.topic = \"SELECT * FROM SanPham WHERE ten_san_pham LIKE ? OR mo_ta LIKE ? ORDER BY id\";\nmsg.payload = [searchPattern, searchPattern];\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 840,
+        "wires": [
+            [
+                "d555704baa2534bf"
+            ]
+        ]
+    },
+    {
+        "id": "d555704baa2534bf",
+        "type": "mysql",
+        "z": "e2aeb44609382978",
+        "g": "805b42cfaa2f1cbb",
+        "mydb": "aa6f09801d744578",
+        "name": "Query DB",
+        "x": 850,
+        "y": 840,
+        "wires": [
+            [
+                "bc5d878ed7272832"
+            ]
+        ]
+    },
+    {
+        "id": "bc5d878ed7272832",
+        "type": "http response",
+        "z": "e2aeb44609382978",
+        "g": "805b42cfaa2f1cbb",
+        "name": "200",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 1050,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "aa6f09801d744578",
+        "type": "MySQLdatabase",
+        "name": "ShopQA",
+        "host": "mariadb",
+        "port": "3306",
+        "db": "ShopQA",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "744839d18fc78820",
+        "type": "group",
+        "z": "e2aeb44609382978",
+        "name": "API Sản Phẩm Bán Chạy",
+        "style": {
+            "stroke": "#000000",
+            "label": true,
+            "color": "#000000"
+        },
+        "nodes": [
+            "9e51903f648290a0",
+            "28f6b9516734f28a",
+            "885185b228ac07e1",
+            "c2bd986fc228cfe7"
+        ],
+        "x": 294,
+        "y": 359,
+        "w": 872,
+        "h": 82
+    },
+    {
+        "id": "9e51903f648290a0",
+        "type": "http in",
+        "z": "e2aeb44609382978",
+        "g": "744839d18fc78820",
+        "name": "GET /san-pham-ban-chay",
+        "url": "/san-pham-ban-chay",
+        "method": "get",
+        "upload": false,
+        "skipBodyParsing": false,
+        "swaggerDoc": "",
+        "x": 430,
+        "y": 400,
+        "wires": [
+            [
+                "28f6b9516734f28a"
+            ]
+        ]
+    },
+    {
+        "id": "28f6b9516734f28a",
+        "type": "function",
+        "z": "e2aeb44609382978",
+        "g": "744839d18fc78820",
+        "name": "SQL Query",
+        "func": "msg.topic = \"SELECT * FROM SanPham WHERE la_ban_chay = 1 ORDER BY so_luot_mua DESC LIMIT 10\";\nmsg.payload = [];\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 400,
+        "wires": [
+            [
+                "885185b228ac07e1"
+            ]
+        ]
+    },
+    {
+        "id": "885185b228ac07e1",
+        "type": "mysql",
+        "z": "e2aeb44609382978",
+        "g": "744839d18fc78820",
+        "mydb": "aa6f09801d744578",
+        "name": "Query DB",
+        "x": 890,
+        "y": 400,
+        "wires": [
+            [
+                "c2bd986fc228cfe7"
+            ]
+        ]
+    },
+    {
+        "id": "c2bd986fc228cfe7",
+        "type": "http response",
+        "z": "e2aeb44609382978",
+        "g": "744839d18fc78820",
+        "name": "200",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 1090,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "64a2e02d97f8fbf2",
+        "type": "group",
+        "z": "e2aeb44609382978",
+        "name": "API Lấy Nhóm SP",
+        "style": {
+            "stroke": "#000000",
+            "label": true,
+            "color": "#000000"
+        },
+        "nodes": [
+            "ec468a65810c23b9",
+            "feff8dfda0a670de",
+            "3b061f95ae42569c",
+            "3398d4108a91a93b"
+        ],
+        "x": 304,
+        "y": 499,
+        "w": 842,
+        "h": 82
+    },
+    {
+        "id": "ec468a65810c23b9",
+        "type": "function",
+        "z": "e2aeb44609382978",
+        "g": "64a2e02d97f8fbf2",
+        "name": "SQL Query",
+        "func": "msg.topic = \"SELECT * FROM NhomSanPham ORDER BY id\";\nmsg.payload = [];\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 540,
+        "wires": [
+            [
+                "3b061f95ae42569c"
+            ]
+        ]
+    },
+    {
+        "id": "feff8dfda0a670de",
+        "type": "http in",
+        "z": "e2aeb44609382978",
+        "g": "64a2e02d97f8fbf2",
+        "name": "GET /nhom-san-pham",
+        "url": "/nhom-san-pham",
+        "method": "get",
+        "upload": false,
+        "skipBodyParsing": false,
+        "swaggerDoc": "",
+        "x": 430,
+        "y": 540,
+        "wires": [
+            [
+                "ec468a65810c23b9"
+            ]
+        ]
+    },
+    {
+        "id": "3b061f95ae42569c",
+        "type": "mysql",
+        "z": "e2aeb44609382978",
+        "g": "64a2e02d97f8fbf2",
+        "mydb": "aa6f09801d744578",
+        "name": "Query DB",
+        "x": 870,
+        "y": 540,
+        "wires": [
+            [
+                "3398d4108a91a93b"
+            ]
+        ]
+    },
+    {
+        "id": "3398d4108a91a93b",
+        "type": "http response",
+        "z": "e2aeb44609382978",
+        "g": "64a2e02d97f8fbf2",
+        "name": "200",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 1070,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "ba3f824c0b14ff6e",
+        "type": "group",
+        "z": "e2aeb44609382978",
+        "name": "API Lấy Sản Phẩm",
+        "style": {
+            "label": true,
+            "stroke": "#000000",
+            "color": "#000000"
+        },
+        "nodes": [
+            "98b151d68d0932d8",
+            "dde06fe20d70dea2",
+            "47cc1a6fabb62518",
+            "7683f9a8a54d51c9"
+        ],
+        "x": 294,
+        "y": 639,
+        "w": 842,
+        "h": 82
+    },
+    {
+        "id": "98b151d68d0932d8",
+        "type": "http in",
+        "z": "e2aeb44609382978",
+        "g": "ba3f824c0b14ff6e",
+        "name": "GET /san-pham",
+        "url": "/san-pham",
+        "method": "get",
+        "upload": false,
+        "skipBodyParsing": false,
+        "swaggerDoc": "",
+        "x": 400,
+        "y": 680,
+        "wires": [
+            [
+                "dde06fe20d70dea2"
+            ]
+        ]
+    },
+    {
+        "id": "dde06fe20d70dea2",
+        "type": "function",
+        "z": "e2aeb44609382978",
+        "g": "ba3f824c0b14ff6e",
+        "name": "Parse nhom ID",
+        "func": "const nhomId = msg.req.query.nhom;\nif (!nhomId) {\n    msg.statusCode = 400;\n    msg.payload = { error: 'Thiếu tham số nhom' };\n    return null;\n}\nmsg.topic = \"SELECT * FROM SanPham WHERE nhom_id = ? ORDER BY id\";\nmsg.payload = [parseInt(nhomId)];\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 680,
+        "wires": [
+            [
+                "47cc1a6fabb62518"
+            ]
+        ]
+    },
+    {
+        "id": "47cc1a6fabb62518",
+        "type": "mysql",
+        "z": "e2aeb44609382978",
+        "g": "ba3f824c0b14ff6e",
+        "mydb": "aa6f09801d744578",
+        "name": "Query DB",
+        "x": 860,
+        "y": 680,
+        "wires": [
+            [
+                "7683f9a8a54d51c9"
+            ]
+        ]
+    },
+    {
+        "id": "7683f9a8a54d51c9",
+        "type": "http response",
+        "z": "e2aeb44609382978",
+        "g": "ba3f824c0b14ff6e",
+        "name": "200",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 1060,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "1378f5ede104b1af",
+        "type": "group",
+        "z": "e2aeb44609382978",
+        "name": "API Login",
+        "style": {
+            "stroke": "#000000",
+            "label": true,
+            "color": "#ff0000"
+        },
+        "nodes": [
+            "6a69f9069f678ae9",
+            "6334e34d72e9eeb8",
+            "c464ad350bdb07a1",
+            "bfbff98f01ad7a02",
+            "3ec2e0496ed2b31b",
+            "8f436fd50a618f80",
+            "dbaee2b265a22980",
+            "c8184e8e5811b6bd",
+            "e5d402dad6f48ce8",
+            "172607a8e444482d",
+            "b6ef8791622ddbc6",
+            "4c23757b5d8591b0"
+        ],
+        "x": 114,
+        "y": 19,
+        "w": 1432,
+        "h": 282
+    },
+    {
+        "id": "6a69f9069f678ae9",
+        "type": "http in",
+        "z": "e2aeb44609382978",
+        "g": "1378f5ede104b1af",
+        "name": "POST /login",
+        "url": "/login",
+        "method": "post",
+        "upload": false,
+        "skipBodyParsing": false,
+        "swaggerDoc": "",
+        "x": 210,
+        "y": 180,
+        "wires": [
+            [
+                "6334e34d72e9eeb8",
+                "c464ad350bdb07a1"
+            ]
+        ]
+    },
+    {
+        "id": "6334e34d72e9eeb8",
+        "type": "debug",
+        "z": "e2aeb44609382978",
+        "g": "1378f5ede104b1af",
+        "name": "1️⃣ Input",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "complete": "payload",
+        "x": 410,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "c464ad350bdb07a1",
+        "type": "function",
+        "z": "e2aeb44609382978",
+        "g": "1378f5ede104b1af",
+        "name": "Chuẩn bị data",
+        "func": "let data = msg.payload;\nif (typeof data === 'string') {\n    try { data = JSON.parse(data); } catch(e) {}\n}\n\nconst username = data.ten_dang_nhap;\nconst password = data.mat_khau;\n\nif (!username || !password) {\n    msg.statusCode = 400;\n    msg.payload = { error: 'Thiếu username hoặc password' };\n    return null;\n}\n\nmsg.username = username;\nmsg.password = password;\nmsg.payload = password;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 240,
+        "wires": [
+            [
+                "bfbff98f01ad7a02"
+            ]
+        ]
+    },
+    {
+        "id": "bfbff98f01ad7a02",
+        "type": "exec",
+        "z": "e2aeb44609382978",
+        "g": "1378f5ede104b1af",
+        "command": "echo -n",
+        "addpay": "payload",
+        "append": "| sha256sum | cut -d' ' -f1",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "SHA256 hash",
+        "x": 630,
+        "y": 180,
+        "wires": [
+            [
+                "3ec2e0496ed2b31b"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "3ec2e0496ed2b31b",
+        "type": "function",
+        "z": "e2aeb44609382978",
+        "g": "1378f5ede104b1af",
+        "name": "Xử lý hash",
+        "func": "const hash = msg.payload.trim();\nmsg.password_hash = hash;\nmsg.topic = \"SELECT id, ten_dang_nhap, mat_khau, la_admin FROM NguoiDung WHERE ten_dang_nhap = ?\";\nmsg.payload = [msg.username];\n\nnode.warn(`Username: ${msg.username}`);\nnode.warn(`Hash: ${hash}`);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 830,
+        "y": 180,
+        "wires": [
+            [
+                "8f436fd50a618f80",
+                "dbaee2b265a22980"
+            ]
+        ]
+    },
+    {
+        "id": "8f436fd50a618f80",
+        "type": "debug",
+        "z": "e2aeb44609382978",
+        "g": "1378f5ede104b1af",
+        "name": "2️⃣ Hash",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "password_hash",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 930,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "dbaee2b265a22980",
+        "type": "mysql",
+        "z": "e2aeb44609382978",
+        "g": "1378f5ede104b1af",
+        "mydb": "aa6f09801d744578",
+        "name": "Truy Vấn DB",
+        "x": 1030,
+        "y": 220,
+        "wires": [
+            [
+                "c8184e8e5811b6bd",
+                "e5d402dad6f48ce8"
+            ]
+        ]
+    },
+    {
+        "id": "c8184e8e5811b6bd",
+        "type": "debug",
+        "z": "e2aeb44609382978",
+        "g": "1378f5ede104b1af",
+        "name": "3️⃣ DB Result",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "complete": "payload",
+        "x": 1160,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "e5d402dad6f48ce8",
+        "type": "function",
+        "z": "e2aeb44609382978",
+        "g": "1378f5ede104b1af",
+        "name": "Verify",
+        "func": "const rows = msg.payload;\n\nif (!rows || rows.length === 0) {\n    msg.statusCode = 401;\n    msg.payload = { error: 'Username không tồn tại' };\n    node.send([null, msg]);\n    return;\n}\n\nconst user = rows[0];\nconst hash_db = user.mat_khau;\nconst hash_input = msg.password_hash;\n\nnode.warn(`DB: ${hash_db}`);\nnode.warn(`Input: ${hash_input}`);\n\nif (hash_db !== hash_input) {\n    msg.statusCode = 401;\n    msg.payload = { error: 'Sai mật khẩu' };\n    node.send([null, msg]);\n    return;\n}\n\nconst token = Buffer.from(JSON.stringify({\n    id: user.id,\n    la_admin: user.la_admin\n})).toString('base64');\n\nmsg.payload = {\n    token: token,\n    la_admin: user.la_admin,\n    user: user.ten_dang_nhap,\n    message: 'Đăng nhập thành công'\n};\n\nnode.send([msg, null]);",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 1210,
+        "y": 180,
+        "wires": [
+            [
+                "172607a8e444482d",
+                "b6ef8791622ddbc6"
+            ],
+            [
+                "4c23757b5d8591b0"
+            ]
+        ]
+    },
+    {
+        "id": "172607a8e444482d",
+        "type": "debug",
+        "z": "e2aeb44609382978",
+        "g": "1378f5ede104b1af",
+        "name": "4️⃣ Success",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "complete": "payload",
+        "x": 1420,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "b6ef8791622ddbc6",
+        "type": "http response",
+        "z": "e2aeb44609382978",
+        "g": "1378f5ede104b1af",
+        "name": "200",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 1470,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "4c23757b5d8591b0",
+        "type": "http response",
+        "z": "e2aeb44609382978",
+        "g": "1378f5ede104b1af",
+        "name": "401",
+        "statusCode": "401",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 1410,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "4ceb9691a846a2a5",
+        "type": "group",
+        "z": "e2aeb44609382978",
+        "name": "Lấy Đơn Hàng",
+        "style": {
+            "stroke": "#000000",
+            "label": true,
+            "color": "#000000"
+        },
+        "nodes": [
+            "84844ccb41329e36",
+            "f269aed25b731f0f",
+            "4d9e6fad6ad3dcf0",
+            "4643f02e52d8961e",
+            "b7a96387791facdc",
+            "70c33e476b2bc87d",
+            "0f83da68559981c1"
+        ],
+        "x": 174,
+        "y": 939,
+        "w": 1342,
+        "h": 122
+    },
+    {
+        "id": "84844ccb41329e36",
+        "type": "http in",
+        "z": "e2aeb44609382978",
+        "g": "4ceb9691a846a2a5",
+        "name": "GET /don-hang/:id",
+        "url": "/don-hang/:id",
+        "method": "get",
+        "upload": false,
+        "skipBodyParsing": false,
+        "swaggerDoc": "",
+        "x": 290,
+        "y": 980,
+        "wires": [
+            [
+                "f269aed25b731f0f"
+            ]
+        ]
+    },
+    {
+        "id": "f269aed25b731f0f",
+        "type": "function",
+        "z": "e2aeb44609382978",
+        "g": "4ceb9691a846a2a5",
+        "name": "Extract ID",
+        "func": "const userId = msg.req.params.id;\nif (!userId || isNaN(userId)) {\n  msg.statusCode = 400;\n  msg.payload = { error: 'ID không hợp lệ' };\n  return [msg, null];\n}\nmsg.userId = parseInt(userId);\nreturn [null, msg];",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 980,
+        "wires": [
+            [
+                "0f83da68559981c1"
+            ],
+            [
+                "4d9e6fad6ad3dcf0"
+            ]
+        ]
+    },
+    {
+        "id": "4d9e6fad6ad3dcf0",
+        "type": "function",
+        "z": "e2aeb44609382978",
+        "g": "4ceb9691a846a2a5",
+        "name": "SQL Query (JOIN chi tiết)",
+        "func": "const userId = msg.userId;\nmsg.topic = `\n  SELECT d.*, JSON_ARRAYAGG(\n    JSON_OBJECT(\n      'san_pham_id', c.san_pham_id,\n      'ten_san_pham', s.ten_san_pham,\n      'so_luong', c.so_luong,\n      'gia_luc_mua', c.gia_luc_mua\n    )\n  ) AS chi_tiet\n  FROM DonHang d\n  LEFT JOIN ChiTietDonHang c ON d.id = c.don_hang_id\n  LEFT JOIN SanPham s ON s.id = c.san_pham_id\n  WHERE d.nguoi_dung_id = ?\n  GROUP BY d.id\n  ORDER BY d.ngay_tao DESC\n`;\nmsg.payload = [userId];\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 980,
+        "wires": [
+            [
+                "4643f02e52d8961e"
+            ]
+        ]
+    },
+    {
+        "id": "4643f02e52d8961e",
+        "type": "mysql",
+        "z": "e2aeb44609382978",
+        "g": "4ceb9691a846a2a5",
+        "mydb": "aa6f09801d744578",
+        "name": "Query DB",
+        "x": 1000,
+        "y": 980,
+        "wires": [
+            [
+                "b7a96387791facdc"
+            ]
+        ]
+    },
+    {
+        "id": "b7a96387791facdc",
+        "type": "function",
+        "z": "e2aeb44609382978",
+        "g": "4ceb9691a846a2a5",
+        "name": "Format JSON chi_tiet",
+        "func": "msg.payload = msg.payload.map(o => {\n  o.chi_tiet = JSON.parse(o.chi_tiet || '[]');\n  return o;\n});\nmsg.headers = { 'Content-Type': 'application/json' };\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 980,
+        "wires": [
+            [
+                "70c33e476b2bc87d"
+            ]
+        ]
+    },
+    {
+        "id": "70c33e476b2bc87d",
+        "type": "http response",
+        "z": "e2aeb44609382978",
+        "g": "4ceb9691a846a2a5",
+        "name": "200 OK",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 1430,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "0f83da68559981c1",
+        "type": "http response",
+        "z": "e2aeb44609382978",
+        "g": "4ceb9691a846a2a5",
+        "name": "400 Error",
+        "statusCode": "400",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 740,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "7856c1f07ae5653f",
+        "type": "group",
+        "z": "e2aeb44609382978",
+        "name": "Đặt Hàng",
+        "style": {
+            "stroke": "#000000",
+            "label": true,
+            "color": "#000000"
+        },
+        "nodes": [
+            "0c1b25433bc2d68f",
+            "17801c82e198d855",
+            "8ff403609bdff499",
+            "0dc3dc3fa0fcadf9",
+            "a5772c454e96d961",
+            "387fe1208d306746",
+            "bcd7ee3588baaa5b",
+            "a64b87c68e74c7ab",
+            "6b4cf80eb9515434",
+            "e90656e415d5c4df",
+            "832a897e092cf770",
+            "c2fbe82e7a8d6137",
+            "ce3d3610530a3053"
+        ],
+        "x": 174,
+        "y": 1099,
+        "w": 1582,
+        "h": 262
+    },
+    {
+        "id": "0c1b25433bc2d68f",
+        "type": "http in",
+        "z": "e2aeb44609382978",
+        "g": "7856c1f07ae5653f",
+        "name": "POST /dat-hang",
+        "url": "/dat-hang",
+        "method": "post",
+        "x": 280,
+        "y": 1200,
+        "wires": [
+            [
+                "17801c82e198d855",
+                "8ff403609bdff499"
+            ]
+        ]
+    },
+    {
+        "id": "17801c82e198d855",
+        "type": "debug",
+        "z": "e2aeb44609382978",
+        "g": "7856c1f07ae5653f",
+        "name": "1️⃣ Request",
+        "active": true,
+        "complete": "payload",
+        "x": 480,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "8ff403609bdff499",
+        "type": "function",
+        "z": "e2aeb44609382978",
+        "g": "7856c1f07ae5653f",
+        "name": "Verify Token",
+        "func": "const auth = msg.req.headers.authorization;\nif (!auth || !auth.startsWith('Bearer ')) {\n    msg.statusCode = 401;\n    msg.payload = { error: 'Chưa đăng nhập' };\n    node.send([null, msg]);\n    return;\n}\n\nconst token = auth.substring(7);\ntry {\n    const decoded = JSON.parse(Buffer.from(token, 'base64').toString());\n    msg.userId = decoded.id;\n    node.send([msg, null]);\n} catch(e) {\n    msg.statusCode = 401;\n    msg.payload = { error: 'Token không hợp lệ' };\n    node.send([null, msg]);\n}",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 1200,
+        "wires": [
+            [
+                "0dc3dc3fa0fcadf9"
+            ],
+            [
+                "ce3d3610530a3053"
+            ]
+        ]
+    },
+    {
+        "id": "0dc3dc3fa0fcadf9",
+        "type": "function",
+        "z": "e2aeb44609382978",
+        "g": "7856c1f07ae5653f",
+        "name": "Chuẩn bị đơn hàng",
+        "func": "let data = msg.payload;\nif (typeof data === 'string') {\n    try { data = JSON.parse(data); } catch(e) {}\n}\n\nconst cart = data.cart || [];\nconst shipping = data.shipping || {};\n\nif (cart.length === 0) {\n    msg.statusCode = 400;\n    msg.payload = { error: 'Giỏ hàng trống' };\n    return null;\n}\n\nconst totalAmount = cart.reduce((sum, item) => sum + (item.gia_ban * item.so_luong), 0);\n\n// Lưu cart để dùng sau\nmsg.cart = cart;\n\n// Query insert DonHang\nmsg.topic = \"INSERT INTO DonHang (nguoi_dung_id, tong_tien, ten_nguoi_nhan, dien_thoai_nguoi_nhan, dia_chi_giao) VALUES (?, ?, ?, ?, ?)\";\nmsg.payload = [\n    msg.userId,\n    totalAmount,\n    shipping.ten,\n    shipping.dien_thoai,\n    shipping.dia_chi\n];\n\nnode.warn(`Tạo đơn hàng: User ${msg.userId}, Tổng ${totalAmount}đ, ${cart.length} items`);\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 1200,
+        "wires": [
+            [
+                "a5772c454e96d961",
+                "387fe1208d306746"
+            ]
+        ]
+    },
+    {
+        "id": "a5772c454e96d961",
+        "type": "debug",
+        "z": "e2aeb44609382978",
+        "g": "7856c1f07ae5653f",
+        "name": "2️⃣ Đơn hàng",
+        "active": true,
+        "complete": "payload",
+        "x": 910,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "387fe1208d306746",
+        "type": "mysql",
+        "z": "e2aeb44609382978",
+        "g": "7856c1f07ae5653f",
+        "mydb": "aa6f09801d744578",
+        "name": "Insert DonHang",
+        "x": 910,
+        "y": 1200,
+        "wires": [
+            [
+                "bcd7ee3588baaa5b",
+                "a64b87c68e74c7ab"
+            ]
+        ]
+    },
+    {
+        "id": "bcd7ee3588baaa5b",
+        "type": "debug",
+        "z": "e2aeb44609382978",
+        "g": "7856c1f07ae5653f",
+        "name": "3️⃣ DonHang ID",
+        "active": true,
+        "complete": "payload",
+        "x": 1130,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "a64b87c68e74c7ab",
+        "type": "function",
+        "z": "e2aeb44609382978",
+        "g": "7856c1f07ae5653f",
+        "name": "Chuẩn bị chi tiết",
+        "func": "const donHangId = msg.payload.insertId;\nconst cart = msg.cart;\n\nif (!cart || cart.length === 0) {\n    msg.payload = { success: true, donHangId };\n    return msg;\n}\n\n// Tạo 1 item để insert\nconst firstItem = cart[0];\n\nmsg.donHangId = donHangId;\nmsg.currentIndex = 0;\nmsg.totalItems = cart.length;\n\n// Insert item đầu tiên\nmsg.topic = \"INSERT INTO ChiTietDonHang (don_hang_id, san_pham_id, so_luong, gia_luc_mua) VALUES (?, ?, ?, ?)\";\nmsg.payload = [\n    donHangId,\n    firstItem.id,\n    firstItem.so_luong,\n    firstItem.gia_ban\n];\n\nnode.warn(`Insert chi tiết 1/${cart.length}: SP ${firstItem.id}`);\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 1300,
+        "wires": [
+            [
+                "6b4cf80eb9515434"
+            ]
+        ]
+    },
+    {
+        "id": "6b4cf80eb9515434",
+        "type": "mysql",
+        "z": "e2aeb44609382978",
+        "g": "7856c1f07ae5653f",
+        "mydb": "aa6f09801d744578",
+        "name": "Insert ChiTiet",
+        "x": 1420,
+        "y": 1160,
+        "wires": [
+            [
+                "e90656e415d5c4df"
+            ]
+        ]
+    },
+    {
+        "id": "e90656e415d5c4df",
+        "type": "function",
+        "z": "e2aeb44609382978",
+        "g": "7856c1f07ae5653f",
+        "name": "Tiếp tục hoặc kết thúc",
+        "func": "const cart = msg.cart;\nconst currentIndex = msg.currentIndex + 1;\n\nif (currentIndex < cart.length) {\n    // Còn items, insert tiếp\n    const item = cart[currentIndex];\n    \n    msg.currentIndex = currentIndex;\n    msg.topic = \"INSERT INTO ChiTietDonHang (don_hang_id, san_pham_id, so_luong, gia_luc_mua) VALUES (?, ?, ?, ?)\";\n    msg.payload = [\n        msg.donHangId,\n        item.id,\n        item.so_luong,\n        item.gia_ban\n    ];\n    \n    node.warn(`Insert chi tiết ${currentIndex + 1}/${cart.length}: SP ${item.id}`);\n    return [msg, null];\n} else {\n    // Hết items, trả response\n    msg.payload = {\n        success: true,\n        donHangId: msg.donHangId,\n        itemCount: cart.length,\n        message: 'Đặt hàng thành công'\n    };\n    \n    node.warn(`Hoàn tất đơn hàng ${msg.donHangId}: ${cart.length} items`);\n    return [null, msg];\n}",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1370,
+        "y": 1280,
+        "wires": [
+            [
+                "6b4cf80eb9515434"
+            ],
+            [
+                "832a897e092cf770",
+                "c2fbe82e7a8d6137"
+            ]
+        ]
+    },
+    {
+        "id": "832a897e092cf770",
+        "type": "debug",
+        "z": "e2aeb44609382978",
+        "g": "7856c1f07ae5653f",
+        "name": "4️⃣ Success",
+        "active": true,
+        "complete": "payload",
+        "x": 1640,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "c2fbe82e7a8d6137",
+        "type": "http response",
+        "z": "e2aeb44609382978",
+        "g": "7856c1f07ae5653f",
+        "name": "200 OK",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 1620,
+        "y": 1320,
+        "wires": []
+    },
+    {
+        "id": "ce3d3610530a3053",
+        "type": "http response",
+        "z": "e2aeb44609382978",
+        "g": "7856c1f07ae5653f",
+        "name": "401",
+        "statusCode": "401",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 690,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "2fcba00359f2ea19",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-mysql": "2.0.0"
+        }
+    }
+]
