@@ -316,4 +316,23 @@ server {
 
   <img width="1231" height="471" alt="image" src="https://github.com/user-attachments/assets/4e1a3414-a38c-41f7-8fec-b6dd55457d6f" />
 
+#### Trang web chạy trên `tranthithuha.com`
+- Đăng nhập:
 
+  <img width="1613" height="554" alt="image" src="https://github.com/user-attachments/assets/40154aeb-9696-41e3-9645-765591bfb917" />
+
+- Danh mục sản phẩm bán chạy:
+
+  <img width="1641" height="844" alt="image" src="https://github.com/user-attachments/assets/57dc186f-1b57-4dbe-8b58-e8a03283af9c" />
+
+- Tìm kiếm sản phẩm:
+
+  <img width="1569" height="877" alt="image" src="https://github.com/user-attachments/assets/1e7c828d-7a11-4785-a7e5-59c4c5a4db6b" />
+
+- Thêm sản phẩm vào giỏ hàng:
+
+  <img width="1716" height="876" alt="image" src="https://github.com/user-attachments/assets/3aef3b80-c419-4a67-b28f-534121c3591a" />
+
+- Đặt hàng và thanh toán:
+
+  <img width="1806" height="883" alt="image" src="https://github.com/user-attachments/assets/8b739418-febd-427e-a52c-c7045de7cce7" />
