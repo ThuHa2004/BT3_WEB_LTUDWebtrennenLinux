@@ -296,15 +296,24 @@ server {
   <img width="1908" height="1031" alt="image" src="https://github.com/user-attachments/assets/f7379c47-dabe-490e-bd72-c2e5d85f87f6" />
 
 
+
 ### 5. Lập trình web frontend+backend (Web thương mại điện tử)
+#### Các api Bachend
+- **http://tranthithuha.com/api/login** API login
+- **http://tranthithuha.com/api/san-pham-ban-chay** Các sản phẩm bán chạy
+  
+  <img width="1914" height="625" alt="image" src="https://github.com/user-attachments/assets/d60f3358-24ff-4159-902e-f144ce3bcda0" />
 
+- **http://tranthithuha.com/nhom-san-pham** API nhóm sản phẩm
 
-- Cấu trúc thư mục:
-```
-   frontend/
-   ├── index.html
-   ├── app.js
-   └── style.css
-```
+  <img width="1261" height="345" alt="image" src="https://github.com/user-attachments/assets/b6991fac-ab74-423e-9e2a-6598015b01ff" />
+
+- **http://tranthithuha.com/api/san-pham?nhom=1** API sản phẩm theo nhóm
+
+  <img width="1223" height="463" alt="image" src="https://github.com/user-attachments/assets/97dbd711-56a2-417b-8b4f-5516f673dc6a" />
+
+- **http://tranthithuha.com/api/tim-kiem?q=áo** API tìm kiếm sản phẩm
+
+  <img width="1231" height="471" alt="image" src="https://github.com/user-attachments/assets/4e1a3414-a38c-41f7-8fec-b6dd55457d6f" />
 
 
