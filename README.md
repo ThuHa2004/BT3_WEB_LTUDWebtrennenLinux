@@ -300,6 +300,9 @@ server {
 ### 5. Lập trình web frontend+backend (Web thương mại điện tử)
 #### Các api Bachend
 - **http://tranthithuha.com/api/login** API login
+
+  <img width="1877" height="559" alt="image" src="https://github.com/user-attachments/assets/b97519c7-28b0-430d-89cc-91aa29f45c34" />
+
 - **http://tranthithuha.com/api/san-pham-ban-chay** Các sản phẩm bán chạy
   
   <img width="1914" height="625" alt="image" src="https://github.com/user-attachments/assets/d60f3358-24ff-4159-902e-f144ce3bcda0" />
@@ -319,20 +322,29 @@ server {
 #### Trang web chạy trên `tranthithuha.com`
 - Đăng nhập:
 
-  <img width="1613" height="554" alt="image" src="https://github.com/user-attachments/assets/40154aeb-9696-41e3-9645-765591bfb917" />
+  <img width="1909" height="1026" alt="image" src="https://github.com/user-attachments/assets/6cff5c4b-7ab2-4220-be80-5a895b3e7039" />
 
 - Danh mục sản phẩm bán chạy:
 
-  <img width="1641" height="844" alt="image" src="https://github.com/user-attachments/assets/57dc186f-1b57-4dbe-8b58-e8a03283af9c" />
+  <img width="1691" height="972" alt="image" src="https://github.com/user-attachments/assets/ab3b9a2d-78bf-492c-b726-d251d1370f22" />
 
 - Tìm kiếm sản phẩm:
 
-  <img width="1569" height="877" alt="image" src="https://github.com/user-attachments/assets/1e7c828d-7a11-4785-a7e5-59c4c5a4db6b" />
+  <img width="1721" height="958" alt="image" src="https://github.com/user-attachments/assets/df1a46f9-6727-4408-8cd6-96c9972d9641" />
 
 - Thêm sản phẩm vào giỏ hàng:
 
-  <img width="1716" height="876" alt="image" src="https://github.com/user-attachments/assets/3aef3b80-c419-4a67-b28f-534121c3591a" />
+  <img width="1892" height="942" alt="image" src="https://github.com/user-attachments/assets/e807e322-3e72-48dd-88ae-e7f785758823" />
+
+- Danh mục sản phẩm:
+
+  <img width="1741" height="828" alt="image" src="https://github.com/user-attachments/assets/5c0fdaf4-b12c-4ff5-aeab-3c71d0b100d1" />
+
+- Sản phẩm trong danh mục áo:
+
+   <img width="1569" height="940" alt="image" src="https://github.com/user-attachments/assets/f8d2f090-50ce-4c0b-bffe-ed8fbcd0e324" />
 
 - Đặt hàng và thanh toán:
 
-  <img width="1806" height="883" alt="image" src="https://github.com/user-attachments/assets/8b739418-febd-427e-a52c-c7045de7cce7" />
+  <img width="1633" height="853" alt="image" src="https://github.com/user-attachments/assets/be623d71-abde-409b-b274-c385e74a57b2" />
+
